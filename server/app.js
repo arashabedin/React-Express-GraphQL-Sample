@@ -1,7 +1,10 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
-const schema = require('./schema/schema.js')
 const app = express();
+require('./models').connect("mongodb://localhost/graphql_test_db", { useNewUrlParser: true });
+require('./instantiation');
+const schema = require('./schema/schema.js')
+
 
 app.use('/graphql', graphqlHTTP({
     schema,
