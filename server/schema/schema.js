@@ -72,7 +72,51 @@ const RootQuery = new GraphQLObjectType({
         }
     })
 });
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addAuthor: {
+            type: AuthorType,
+            args: {
+                name: { type: GraphQLString },
+                age: { type: GraphQLInt }
+            },
+            resolve(parent, args) {
+                //Finding the max id from existing Authors to create a unique key (to use it rather than MongoDb _id).
+                Author.findOne({})
+                    .sort('-id')
+                    .exec(function (err, doc) {
+                        author = new Author({
+                            name: args.name,
+                            age: args.age,
+                            id: doc.id + 1
+                        });
+                        return author.save();
+                    });
+            }
+        },
+        addBook:{
+            type:BookType,
+            args:{
+                name:{type:GraphQLString},
+                genre:{type:GraphQLString},
+                authorId:{type:GraphQLID},
+            },
+            resolve(parent,args){
+                const book = new Book({
+                    name:args.name,
+                    genre:args.genre,
+                    authorId:args.authorId
+                });
+                return book.save();
+            }
+        }
+    }
+}
+
+);
 
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 })
