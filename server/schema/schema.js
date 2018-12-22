@@ -8,7 +8,8 @@ const {
     GraphQLSchema,
     GraphQLID,
     GraphQLInt,
-    GraphQLList
+    GraphQLList,
+    GraphQLNonNull
 } = graphql;
 
 
@@ -78,8 +79,8 @@ const Mutation = new GraphQLObjectType({
         addAuthor: {
             type: AuthorType,
             args: {
-                name: { type: GraphQLString },
-                age: { type: GraphQLInt }
+                name: { type: GraphQLNonNull(GraphQLString) },
+                age: { type: GraphQLNonNull(GraphQLInt) }
             },
             resolve(parent, args) {
                 //Finding the max id from existing Authors to create a unique key (to use it rather than MongoDb _id).
@@ -98,9 +99,9 @@ const Mutation = new GraphQLObjectType({
         addBook:{
             type:BookType,
             args:{
-                name:{type:GraphQLString},
-                genre:{type:GraphQLString},
-                authorId:{type:GraphQLID},
+                name:{type:GraphQLNonNull(GraphQLString)},
+                genre:{type:GraphQLNonNull(GraphQLString)},
+                authorId:{type:GraphQLNonNull(GraphQLID)},
             },
             resolve(parent,args){
                 const book = new Book({
